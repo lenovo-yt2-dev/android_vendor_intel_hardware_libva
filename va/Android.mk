@@ -26,16 +26,7 @@
 LOCAL_PATH:= $(call my-dir)
 
 LIBVA_DRIVERS_PATH = /system/lib
-
-# Version set to Android Jelly Bean
-ALOG_VERSION_REQ := 4.1
-ALOG_VERSION := $(filter $(ALOG_VERSION_REQ),$(firstword $(sort $(PLATFORM_VERSION) \
-                                   $(ALOG_VERSION_REQ))))
-
 include $(CLEAR_VARS)
-
-#LIBVA_MINOR_VERSION := 31
-#LIBVA_MAJOR_VERSION := 0 
 
 LOCAL_SRC_FILES := \
 	va.c \
@@ -45,14 +36,8 @@ LOCAL_SRC_FILES := \
 LOCAL_CFLAGS := \
 	-DANDROID \
 	-DVA_DRIVERS_PATH="\"$(LIBVA_DRIVERS_PATH)\"" \
-	-DLOG_TAG=\"libva\"
-
-# Android Jelly Bean defined ALOGx, older versions use LOGx
-ifeq ($(ALOG_VERSION), $(ALOG_VERSION_REQ))
-LOCAL_CFLAGS += -DANDROID_ALOG
-else
-LOCAL_CFLAGS += -DANDROID_LOG
-endif
+	-DLOG_TAG=\"libva\" \
+	-DANDROID_ALOG
 
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/..
 
@@ -79,7 +64,8 @@ LOCAL_COPY_HEADERS := \
 	va_enc_mpeg2.h \
 
 LOCAL_COPY_HEADERS_TO := libva/va
-
+#FixMe
+#LOCAL_CFLAGS += -Werror
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE := libva
 
@@ -115,7 +101,8 @@ LOCAL_C_INCLUDES := \
 LOCAL_COPY_HEADERS_TO := libva/va
 
 LOCAL_COPY_HEADERS := va_android.h		
-
+#FixMe
+#LOCAL_CFLAGS += -Werror
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE := libva-android
 
@@ -142,7 +129,8 @@ LOCAL_C_INCLUDES := \
 LOCAL_COPY_HEADERS_TO := libva/va
 
 LOCAL_COPY_HEADERS := egl/va_egl.h egl/va_backend_egl.h
-
+#FixMe
+#LOCAL_CFLAGS += -Werror
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE := libva-egl
 
@@ -171,7 +159,8 @@ LOCAL_COPY_HEADERS := \
 	va_backend_tpi.h
 
 LOCAL_SHARED_LIBRARIES := libva
-
+#FixMe
+#LOCAL_CFLAGS += -Werror
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE := libva-tpi
 

@@ -369,11 +369,12 @@ void va_TraceSurface(VADisplay dpy)
 
 void va_TraceInitialize (
     VADisplay dpy,
-    int *major_version,     /* out */
-    int *minor_version      /* out */
+    int __maybe_unused *major_version,     /* out */
+    int __maybe_unused *minor_version      /* out */
 )
 {
-    DPY2TRACECTX(dpy);    
+    DPY2TRACECTX(dpy);
+
     TRACE_FUNCNAME(idx);
 }
 
@@ -392,7 +393,7 @@ void va_TraceCreateConfig(
     VAEntrypoint entrypoint, 
     VAConfigAttrib *attrib_list,
     int num_attribs,
-    VAConfigID *config_id /* out */
+    VAConfigID __maybe_unused *config_id /* out */
 )
 {
     int i;
@@ -400,7 +401,7 @@ void va_TraceCreateConfig(
     DPY2TRACECTX(dpy);
 
     TRACE_FUNCNAME(idx);
-    
+
     va_TraceMsg(trace_ctx, "\tprofile = %d\n", profile);
     va_TraceMsg(trace_ctx, "\tentrypoint = %d\n", entrypoint);
     va_TraceMsg(trace_ctx, "\tnum_attribs = %d\n", num_attribs);
@@ -486,7 +487,7 @@ static void va_TraceSurfaceAttributes(
             va_TraceMsg(trace_ctx, "\t\tvalue.value.p = %p\n", p->value.value.p);
             if ((p->type == VASurfaceAttribExternalBufferDescriptor) && p->value.value.p) {
                 VASurfaceAttribExternalBuffers *tmp = (VASurfaceAttribExternalBuffers *) p->value.value.p;
-                int j;
+                unsigned int j;
                 
                 va_TraceMsg(trace_ctx, "\t\t--VASurfaceAttribExternalBufferDescriptor\n");
                 va_TraceMsg(trace_ctx, "\t\t  pixel_format=0x%08x\n", tmp->pixel_format);
@@ -647,11 +648,11 @@ static char * buffer_type_to_string(int type)
 
 void va_TraceCreateBuffer (
     VADisplay dpy,
-    VAContextID context,	/* in */
+    VAContextID __maybe_unused context,	/* in */
     VABufferType type,		/* in */
     unsigned int size,		/* in */
     unsigned int num_elements,	/* in */
-    void *data,			/* in */
+    void __maybe_unused *data,			/* in */
     VABufferID *buf_id		/* out */
 )
 {
@@ -763,7 +764,9 @@ static void va_TraceVABuffers(
     unsigned int dump_size = 64;
 
     DPY2TRACECTX(dpy);
-    
+
+    va_TraceMsg(trace_ctx, "\t    context = %d, buffer = %d, type = %d, size = %d, num_elements = %d\n",
+                context, buffer, type, size, num_elements);
     va_TraceMsg(trace_ctx, "--%s\n",  buffer_type_to_string(type));
 
     if (dump_size>size)
@@ -794,18 +797,17 @@ static void va_TraceVABuffers(
 
 static void va_TraceVAPictureParameterBufferMPEG2(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VAPictureParameterBufferMPEG2 *p=(VAPictureParameterBufferMPEG2 *)data;
     DPY2TRACECTX(dpy);
 
     va_TraceMsg(trace_ctx,"VAPictureParameterBufferMPEG2\n");
-
     va_TraceMsg(trace_ctx,"\thorizontal size= %d\n", p->horizontal_size);
     va_TraceMsg(trace_ctx,"\tvertical size= %d\n", p->vertical_size);
     va_TraceMsg(trace_ctx,"\tforward reference picture= %d\n", p->forward_reference_picture);
@@ -833,18 +835,17 @@ static void va_TraceVAPictureParameterBufferMPEG2(
 
 static void va_TraceVAIQMatrixBufferMPEG2(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VAIQMatrixBufferMPEG2 *p=(VAIQMatrixBufferMPEG2 *)data;
     DPY2TRACECTX(dpy);
 
     va_TraceMsg(trace_ctx,"VAIQMatrixBufferMPEG2\n");
-
     va_TraceMsg(trace_ctx,"\tload_intra_quantiser_matrix = %d\n", p->load_intra_quantiser_matrix);
     va_TraceMsg(trace_ctx,"\tload_non_intra_quantiser_matrix = %d\n", p->load_non_intra_quantiser_matrix);
     va_TraceMsg(trace_ctx,"\tload_chroma_intra_quantiser_matrix = %d\n", p->load_chroma_intra_quantiser_matrix);
@@ -861,11 +862,11 @@ static void va_TraceVAIQMatrixBufferMPEG2(
 
 static void va_TraceVASliceParameterBufferMPEG2(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VASliceParameterBufferMPEG2 *p=(VASliceParameterBufferMPEG2 *)data;
@@ -877,7 +878,6 @@ static void va_TraceVASliceParameterBufferMPEG2(
     trace_ctx->trace_slice_size = p->slice_data_size;
 
     va_TraceMsg(trace_ctx,"VASliceParameterBufferMPEG2\n");
-
     va_TraceMsg(trace_ctx,"\tslice_data_size = %d\n", p->slice_data_size);
     va_TraceMsg(trace_ctx,"\tslice_data_offset = %d\n", p->slice_data_offset);
     va_TraceMsg(trace_ctx,"\tslice_data_flag = %d\n", p->slice_data_flag);
@@ -893,11 +893,11 @@ static void va_TraceVASliceParameterBufferMPEG2(
 
 static void va_TraceVAPictureParameterBufferJPEG(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     int i;
@@ -918,17 +918,18 @@ static void va_TraceVAPictureParameterBufferJPEG(
 
 static void va_TraceVAIQMatrixBufferJPEG(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     int i, j;
     static char tmp[1024];
     VAIQMatrixBufferJPEGBaseline *p=(VAIQMatrixBufferJPEGBaseline *)data;
     DPY2TRACECTX(dpy);
+
     va_TraceMsg(trace_ctx,"*VAIQMatrixParameterBufferJPEG\n");
     va_TraceMsg(trace_ctx,"\tload_quantiser_table =\n");
     for (i = 0; i < 4; ++i) {
@@ -946,16 +947,17 @@ static void va_TraceVAIQMatrixBufferJPEG(
 
 static void va_TraceVASliceParameterBufferJPEG(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     int i;
     VASliceParameterBufferJPEGBaseline *p=(VASliceParameterBufferJPEGBaseline *)data;
     DPY2TRACECTX(dpy);
+
     va_TraceMsg(trace_ctx,"*VASliceParameterBufferJPEG\n");
     va_TraceMsg(trace_ctx,"\tslice_data_size = %u\n", p->slice_data_size);
     va_TraceMsg(trace_ctx,"\tslice_data_offset = %u\n", p->slice_data_offset);
@@ -974,11 +976,11 @@ static void va_TraceVASliceParameterBufferJPEG(
 
 static void va_TraceVAHuffmanTableBufferJPEG(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     int i, j;
@@ -1020,11 +1022,11 @@ static void va_TraceVAHuffmanTableBufferJPEG(
 
 static void va_TraceVAPictureParameterBufferMPEG4(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     int i;
@@ -1080,11 +1082,11 @@ static void va_TraceVAPictureParameterBufferMPEG4(
 
 static void va_TraceVAIQMatrixBufferMPEG4(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     int i;
@@ -1109,18 +1111,17 @@ static void va_TraceVAIQMatrixBufferMPEG4(
 
 static void va_TraceVAEncSequenceParameterBufferMPEG4(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VAEncSequenceParameterBufferMPEG4 *p = (VAEncSequenceParameterBufferMPEG4 *)data;
     DPY2TRACECTX(dpy);
-    
+
     va_TraceMsg(trace_ctx, "\t--VAEncSequenceParameterBufferMPEG4\n");
-    
     va_TraceMsg(trace_ctx, "\tprofile_and_level_indication = %d\n", p->profile_and_level_indication);
     va_TraceMsg(trace_ctx, "\tintra_period = %d\n", p->intra_period);
     va_TraceMsg(trace_ctx, "\tvideo_object_layer_width = %d\n", p->video_object_layer_width);
@@ -1139,16 +1140,16 @@ static void va_TraceVAEncSequenceParameterBufferMPEG4(
 
 static void va_TraceVAEncPictureParameterBufferMPEG4(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VAEncPictureParameterBufferMPEG4 *p = (VAEncPictureParameterBufferMPEG4 *)data;
     DPY2TRACECTX(dpy);
-    
+
     va_TraceMsg(trace_ctx, "\t--VAEncPictureParameterBufferMPEG4\n");
     va_TraceMsg(trace_ctx, "\treference_picture = 0x%08x\n", p->reference_picture);
     va_TraceMsg(trace_ctx, "\treconstructed_picture = 0x%08x\n", p->reconstructed_picture);
@@ -1166,11 +1167,11 @@ static void va_TraceVAEncPictureParameterBufferMPEG4(
 
 static void va_TraceVASliceParameterBufferMPEG4(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VASliceParameterBufferMPEG4 *p=(VASliceParameterBufferMPEG4 *)data;
@@ -1486,11 +1487,11 @@ static void va_TraceVAIQMatrixBufferHEVC(
 
 static void va_TraceVAPictureParameterBufferH264(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     int i;
@@ -1553,7 +1554,7 @@ static void va_TraceVAPictureParameterBufferH264(
     va_TraceMsg(trace_ctx, "\tframe_num = %d\n", p->frame_num);
     va_TraceMsg(trace_ctx, "\tnum_ref_idx_l0_default_active_minus1 = %d\n", p->num_ref_idx_l0_default_active_minus1);
     va_TraceMsg(trace_ctx, "\tnum_ref_idx_l1_default_active_minus1 = %d\n", p->num_ref_idx_l1_default_active_minus1);
-    
+
     va_TraceMsg(trace_ctx, NULL);
 
     return;
@@ -1561,11 +1562,11 @@ static void va_TraceVAPictureParameterBufferH264(
 
 static void va_TraceVASliceParameterBufferH264(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     int i;
@@ -1654,11 +1655,11 @@ static void va_TraceVASliceParameterBufferH264(
 
 static void va_TraceVAIQMatrixBufferH264(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data
 )
 {
@@ -1698,11 +1699,11 @@ static void va_TraceVAIQMatrixBufferH264(
 
 static void va_TraceVAEncSequenceParameterBufferH264(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VAEncSequenceParameterBufferH264 *p = (VAEncSequenceParameterBufferH264 *)data;
@@ -1761,11 +1762,11 @@ static void va_TraceVAEncSequenceParameterBufferH264(
 
 static void va_TraceVAEncPictureParameterBufferH264(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VAEncPictureParameterBufferH264 *p = (VAEncPictureParameterBufferH264 *)data;
@@ -1824,16 +1825,16 @@ static void va_TraceVAEncPictureParameterBufferH264(
 
 static void va_TraceVAEncSliceParameterBuffer(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VAEncSliceParameterBuffer* p = (VAEncSliceParameterBuffer*)data;
     DPY2TRACECTX(dpy);
-    
+
     va_TraceMsg(trace_ctx, "\t--VAEncSliceParameterBuffer\n");
     
     va_TraceMsg(trace_ctx, "\tstart_row_number = %d\n", p->start_row_number);
@@ -1849,11 +1850,11 @@ static void va_TraceVAEncSliceParameterBuffer(
 
 static void va_TraceVAEncSliceParameterBufferH264(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VAEncSliceParameterBufferH264* p = (VAEncSliceParameterBufferH264*)data;
@@ -1967,11 +1968,11 @@ static void va_TraceVAEncSliceParameterBufferH264(
 
 static void va_TraceVAEncPackedHeaderParameterBufferType(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VAEncPackedHeaderParameterBuffer* p = (VAEncPackedHeaderParameterBuffer*)data;
@@ -2101,9 +2102,10 @@ static void va_TraceVAPictureParameterBufferVC1(
 {
     VAPictureParameterBufferVC1* p = (VAPictureParameterBufferVC1*)data;
     DPY2TRACECTX(dpy);
-    
+
     va_TraceMsg(trace_ctx, "\t--VAPictureParameterBufferVC1\n");
-    
+    va_TraceMsg(trace_ctx, "\t    context = %d, buffer = %d, type = %d, size = %d, num_elements = %d\n",
+                context, buffer, type, size, num_elements);
     va_TraceMsg(trace_ctx, "\tforward_reference_picture = 0x%08x\n", p->forward_reference_picture);
     va_TraceMsg(trace_ctx, "\tbackward_reference_picture = 0x%08x\n", p->backward_reference_picture);
     va_TraceMsg(trace_ctx, "\tinloop_decoded_picture = 0x%08x\n", p->inloop_decoded_picture);
@@ -2196,11 +2198,11 @@ static void va_TraceVAPictureParameterBufferVC1(
 
 static void va_TraceVASliceParameterBufferVC1(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void* data
 )
 {
@@ -2221,11 +2223,11 @@ static void va_TraceVASliceParameterBufferVC1(
 
 static void va_TraceVAEncSequenceParameterBufferVP8(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VAEncSequenceParameterBufferVP8 *p = (VAEncSequenceParameterBufferVP8 *)data;
@@ -2255,11 +2257,11 @@ static void va_TraceVAEncSequenceParameterBufferVP8(
 
 static void va_TraceVAEncPictureParameterBufferVP8(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused uffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VAEncPictureParameterBufferVP8 *p = (VAEncPictureParameterBufferVP8 *)data;
@@ -2325,11 +2327,11 @@ static void va_TraceVAEncPictureParameterBufferVP8(
 
 static void va_TraceVAPictureParameterBufferVP8(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     char tmp[1024];
@@ -2401,11 +2403,11 @@ static void va_TraceVAPictureParameterBufferVP8(
 
 static void va_TraceVASliceParameterBufferVP8(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VASliceParameterBufferVP8 *p = (VASliceParameterBufferVP8 *)data;
@@ -2430,11 +2432,11 @@ static void va_TraceVASliceParameterBufferVP8(
 
 static void va_TraceVAIQMatrixBufferVP8(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     char tmp[1024];
@@ -2458,11 +2460,11 @@ static void va_TraceVAIQMatrixBufferVP8(
 }
 static void va_TraceVAProbabilityBufferVP8(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     char tmp[1024];
@@ -2488,7 +2490,7 @@ static void va_TraceVAProbabilityBufferVP8(
 
 void va_TraceBeginPicture(
     VADisplay dpy,
-    VAContextID context,
+    VAContextID __maybe_unused context,
     VASurfaceID render_target
 )
 {
@@ -2496,7 +2498,6 @@ void va_TraceBeginPicture(
 
     TRACE_FUNCNAME(idx);
 
-    va_TraceMsg(trace_ctx, "\tcontext = 0x%08x\n", context);
     va_TraceMsg(trace_ctx, "\trender_targets = 0x%08x\n", render_target);
     va_TraceMsg(trace_ctx, "\tframe_count  = #%d\n", trace_ctx->trace_frame_no);
     va_TraceMsg(trace_ctx, NULL);
@@ -2565,11 +2566,11 @@ static void va_TraceMPEG2Buf(
 
 static void va_TraceVAEncSequenceParameterBufferH263(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VAEncSequenceParameterBufferH263 *p = (VAEncSequenceParameterBufferH263 *)data;
@@ -2590,16 +2591,16 @@ static void va_TraceVAEncSequenceParameterBufferH263(
 
 static void va_TraceVAEncPictureParameterBufferH263(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VAEncPictureParameterBufferH263 *p = (VAEncPictureParameterBufferH263 *)data;
     DPY2TRACECTX(dpy);
-    
+
     va_TraceMsg(trace_ctx, "\t--VAEncPictureParameterBufferH263\n");
     va_TraceMsg(trace_ctx, "\treference_picture = 0x%08x\n", p->reference_picture);
     va_TraceMsg(trace_ctx, "\treconstructed_picture = 0x%08x\n", p->reconstructed_picture);
@@ -2614,16 +2615,16 @@ static void va_TraceVAEncPictureParameterBufferH263(
 
 static void va_TraceVAEncPictureParameterBufferJPEG(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VAEncPictureParameterBufferJPEG *p = (VAEncPictureParameterBufferJPEG *)data;
     int i;
-    
+
     DPY2TRACECTX(dpy);
     
     va_TraceMsg(trace_ctx, "\t--VAEncPictureParameterBufferJPEG\n");
@@ -2658,16 +2659,16 @@ static void va_TraceVAEncPictureParameterBufferJPEG(
 
 static void va_TraceVAEncQMatrixBufferJPEG(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VAQMatrixBufferJPEG *p = (VAQMatrixBufferJPEG *)data;
     DPY2TRACECTX(dpy);
-    
+
     va_TraceMsg(trace_ctx, "\t--VAQMatrixBufferJPEG\n");
     va_TraceMsg(trace_ctx, "\tload_lum_quantiser_matrix = %d\n", p->load_lum_quantiser_matrix);
     if (p->load_lum_quantiser_matrix) {
@@ -2711,16 +2712,16 @@ static void va_TraceVAEncQMatrixBufferJPEG(
 
 static void va_TraceVAEncSliceParameterBufferJPEG(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data)
 {
     VAEncSliceParameterBufferJPEG *p = (VAEncSliceParameterBufferJPEG *)data;
     int i;
-    
+
     DPY2TRACECTX(dpy);
     
     va_TraceMsg(trace_ctx, "\t--VAEncSliceParameterBufferJPEG\n");
@@ -2741,14 +2742,16 @@ static void va_TraceVAEncSliceParameterBufferJPEG(
 
 static void va_TraceH263Buf(
     VADisplay dpy,
-    VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VAContextID __maybe_unused context,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *pbuf
 )
 {
+    DPY2TRACECTX(dpy);
+
     switch (type) {
     case VAPictureParameterBufferType:/* print MPEG4 buffer */
         va_TraceVAPictureParameterBufferMPEG4(dpy, context, buffer, type, size, num_elements, pbuf);
@@ -3139,7 +3142,7 @@ static void va_TraceVC1Buf(
 static void
 va_TraceProcFilterParameterBufferDeinterlacing(
     VADisplay dpy,
-    VAContextID context,
+    VAContextID __maybe_unused context,
     VAProcFilterParameterBufferBase *base
 )
 {
@@ -3155,7 +3158,7 @@ va_TraceProcFilterParameterBufferDeinterlacing(
 static void
 va_TraceProcFilterParameterBufferColorBalance(
     VADisplay dpy,
-    VAContextID context,
+    VAContextID __maybe_unused context,
     VAProcFilterParameterBufferBase *base
 )
 {
@@ -3177,7 +3180,7 @@ va_TraceProcFilterParameterBufferBase(
 {
     DPY2TRACECTX(dpy);
 
-    va_TraceMsg(trace_ctx, "\t    type = %d\n", base->type);
+    va_TraceMsg(trace_ctx, "\t    type = %d, context = %d\n", base->type, context);
 }
 
 static void
@@ -3192,7 +3195,7 @@ va_TraceProcFilterParameterBuffer(
     unsigned int size;
     unsigned int num_elements;
     VAProcFilterParameterBufferBase *base_filter = NULL;
-    int i;
+    unsigned int i;
 
     DPY2TRACECTX(dpy);
 
@@ -3249,15 +3252,15 @@ static void
 va_TraceVAProcPipelineParameterBuffer(
     VADisplay dpy,
     VAContextID context,
-    VABufferID buffer,
-    VABufferType type,
-    unsigned int size,
-    unsigned int num_elements,
+    VABufferID __maybe_unused buffer,
+    VABufferType __maybe_unused type,
+    unsigned int __maybe_unused size,
+    unsigned int __maybe_unused num_elements,
     void *data
 )
 {
     VAProcPipelineParameterBuffer *p = (VAProcPipelineParameterBuffer *)data;
-    int i;
+    unsigned int i;
 
     DPY2TRACECTX(dpy);
 
@@ -3358,7 +3361,7 @@ va_TraceNoneBuf(
 
 void va_TraceRenderPicture(
     VADisplay dpy,
-    VAContextID context,
+    VAContextID __maybe_unused context,
     VABufferID *buffers,
     int num_buffers
 )
@@ -3371,7 +3374,6 @@ void va_TraceRenderPicture(
 
     TRACE_FUNCNAME(idx);
     
-    va_TraceMsg(trace_ctx, "\tcontext = 0x%08x\n", context);
     va_TraceMsg(trace_ctx, "\tnum_buffers = %d\n", num_buffers);
     if (buffers == NULL)
         return;
@@ -3476,8 +3478,8 @@ void va_TraceRenderPicture(
 
 void va_TraceEndPicture(
     VADisplay dpy,
-    VAContextID context,
-    int endpic_done
+    VAContextID __maybe_unused context,
+    int __maybe_unused endpic_done
 )
 {
     int encode, decode, jpeg;
@@ -3485,7 +3487,6 @@ void va_TraceEndPicture(
 
     TRACE_FUNCNAME(idx);
 
-    va_TraceMsg(trace_ctx, "\tcontext = 0x%08x\n", context);
     va_TraceMsg(trace_ctx, "\trender_targets = 0x%08x\n", trace_ctx->trace_rendertarget);
 
     /* avoid to create so many empty files */
@@ -3510,20 +3511,19 @@ void va_TraceEndPicture(
 
 void va_TraceSyncSurface(
     VADisplay dpy,
-    VASurfaceID render_target
+    VASurfaceID __maybe_unused render_target
 )
 {
     DPY2TRACECTX(dpy);
 
     TRACE_FUNCNAME(idx);
 
-    va_TraceMsg(trace_ctx, "\trender_target = 0x%08x\n", render_target);
     va_TraceMsg(trace_ctx, NULL);
 }
 
 void va_TraceQuerySurfaceAttributes(
     VADisplay           dpy,
-    VAConfigID          config,
+    VAConfigID          __maybe_unused config,
     VASurfaceAttrib    *attrib_list,
     unsigned int       *num_attribs
 )
@@ -3531,7 +3531,6 @@ void va_TraceQuerySurfaceAttributes(
     DPY2TRACECTX(dpy);
 
     TRACE_FUNCNAME(idx);
-    va_TraceMsg(trace_ctx, "\tconfig = 0x%08x\n", config);
     va_TraceSurfaceAttributes(trace_ctx, attrib_list, num_attribs);
     
     va_TraceMsg(trace_ctx, NULL);
@@ -3541,7 +3540,7 @@ void va_TraceQuerySurfaceAttributes(
 
 void va_TraceQuerySurfaceStatus(
     VADisplay dpy,
-    VASurfaceID render_target,
+    VASurfaceID __maybe_unused render_target,
     VASurfaceStatus *status    /* out */
 )
 {
@@ -3549,7 +3548,6 @@ void va_TraceQuerySurfaceStatus(
 
     TRACE_FUNCNAME(idx);
 
-    va_TraceMsg(trace_ctx, "\trender_target = 0x%08x\n", render_target);
     if (status)
         va_TraceMsg(trace_ctx, "\tstatus = 0x%08x\n", *status);
     va_TraceMsg(trace_ctx, NULL);
@@ -3623,14 +3621,13 @@ void va_TraceQueryDisplayAttributes (
 static void va_TraceDisplayAttributes (
     VADisplay dpy,
     VADisplayAttribute *attr_list,
-    int num_attributes
+    int __maybe_unused num_attributes
 )
 {
     int i;
     
     DPY2TRACECTX(dpy);
     
-    va_TraceMsg(trace_ctx, "\tnum_attributes = %d\n", num_attributes);
     if (attr_list == NULL)
         return;
     
